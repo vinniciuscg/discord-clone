@@ -3,12 +3,9 @@ import Axios from 'axios';
 
 import { Container, Messages, InputWrapper, Input, InputIcon } from "./styles";
 import ChannelMessage, { Mention } from "../ChannelMessage";
-import { Message } from "styled-icons/material";
-import { MessageSquare } from "styled-icons/boxicons-regular";
 
-//client.on('connect', function() {
-//  console.log('Connected!');
-//});
+const API_URL=process.env.REACT_APP_HOST
+const AMOUNT_OF_MESSAGES_TO_SEND = 5
 
 interface MessageItem {
   author: string, 
@@ -25,7 +22,6 @@ const ChannelData: React.FC = () => {
   const [unsentMessages, setUnsentMessages] = useState<MessageItem[]>([])
   const [messagesArray, setMessagesArray] = useState<MessageItem[]>([])
   const [buscar, setBuscar] = useState(0)
-  const amountOfMessagesToSend = 20
 
   useEffect(() => {
     const div = messagesRef.current;
@@ -35,20 +31,13 @@ const ChannelData: React.FC = () => {
     }
   }, [messagesRef]);
 
-  //useEffect(() => {
-  //    fetchMessages()
-  //}, [])
-
   useEffect(() => {
-    //setTimeout(() => {
-      fetchMessages()
-    //}, 10000);
+    fetchMessages()
   }, [buscar])
 
-  const fetchMessages = () => {
-    //let messages = []
+  const fetchMessages = () => {    
 
-    Axios.get(`http://localhost:1433/api/getFromRedis`).then((response) => {
+    Axios.get(`${API_URL}/api/getFromRedis`).then((response) => {
         let messages = Array.from(response.data).map(item => {
           let it = item as MessageItem
           return {
@@ -70,18 +59,18 @@ const ChannelData: React.FC = () => {
     console.log('aqui');
     
     if(route.includes('toRedis')){
-      await Axios.post(`http://localhost:1433/api/${route}`, {
+      await Axios.post(`${API_URL}/api/${route}`, {
         messagesArray
       })
     }else{
-      await Axios.post(`http://localhost:1433/api/${route}`, {
+      await Axios.post(`${API_URL}/api/${route}`, {
         unsentMessages, messagesArray
       })
     }
   }
 
   const fetchFromDatabase = () => {
-    Axios.get("http://localhost:1433/api/getFromDB").then((response) => {
+    Axios.get(`${API_URL}/api/getFromDB`).then((response) => {
         let messages = Array.from(response.data).map(item => {
           let it = item as MessageItem
           return {
@@ -104,7 +93,7 @@ const ChannelData: React.FC = () => {
     console.log(body);
     
     
-    if(unsentMessages.length >= amountOfMessagesToSend){
+    if(unsentMessages.length >= AMOUNT_OF_MESSAGES_TO_SEND){
       sendToServer('toDB/byArray')
 
       setTimeout(() => {
@@ -115,8 +104,6 @@ const ChannelData: React.FC = () => {
     }
 
     //console.log(messagesArray);
-    
-
     //"{\"author\":\"Vine\",\"content\":\"1\",\"date\":\"30/03/2022 - 21:46:31\",\"bot\":false,\"mention\":false}
 
   }
@@ -133,13 +120,9 @@ const ChannelData: React.FC = () => {
             })
         }
         <ChannelMessage 
-          author="Marcos Vinicius" 
+          author="Fulano" 
           date='23/03/2022 - 21:56:00' 
-          content={
-            <>
-              <Mention>@Luís Felipe</Mention>, favor varrer a casa.
-            </>
-          }
+          content='vamo um lolzin?'
           hasMention
           isBot
         />
@@ -150,11 +133,8 @@ const ChannelData: React.FC = () => {
         onKeyDown={(e) => {
           if(e.key === 'Enter'){
             if(newMessage){
-              //fetchMessages()
-              //submitToDatabase(testMessage)
               let now = new Date()
               submitMessages({
-                  //key: messagesArray.length,
                   author: 'Vine', 
                   content: newMessage,
                   date: `${now.toLocaleDateString().concat(` - ${now.toLocaleTimeString()}`)}`,
