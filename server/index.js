@@ -28,7 +28,7 @@ app.get('/api/getFromRedis', async (req, res) => {
       // if any error while executing above query, throw error
       if (err) throw err;
       // if there is no error, you have the result
-      redis.setAsync('messages', JSON.stringify(result), 'EX', 10);
+      redis.setAsync('messages', JSON.stringify(result), 'EX', 60);
       console.log("Getting from Database")
 
       return res.json(result)
@@ -50,7 +50,7 @@ app.get('/api/getFromDB', async (req, res) => {
     if (err) throw err;
     
     // if there is no error, you have the result
-    redis.setAsync('messages', JSON.stringify(result), 'EX', 10);
+    redis.setAsync('messages', JSON.stringify(result), 'EX', 60);
 
     console.log('Getting from Database');
     return res.json(result)
@@ -66,7 +66,7 @@ app.post('/api/toRedis', async (req, res) => {
   //}else{
   //  previous = unsentMessages
   //}
-  redis.setAsync('messages', JSON.stringify(messagesArray), 'EX', 10);
+  redis.setAsync('messages', JSON.stringify(messagesArray), 'EX', 60);
 })
 
 app.post('/api/toDB/byArray', async (req, res) => {
@@ -85,7 +85,7 @@ app.post('/api/toDB/byArray', async (req, res) => {
 
   console.log(values);
 
-  //redis.setAsync('messages', JSON.stringify(unsentMessages));
+  //redis.setAsync('messages', JSON.stringify(unsentMessages), 'EX', 60);
 
   db.query(sqlInsert, [values], (err, result) => {
     console.log(`${result.affectedRows} messages sent to DB`)
