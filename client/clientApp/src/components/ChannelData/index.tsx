@@ -56,7 +56,7 @@ const ChannelData: React.FC = () => {
   }
 
   const sendToServer = async (route: string) => {
-    console.log('aqui');
+    console.log(`Sending ${unsentMessages.length} messages to server`)
     
     if(route.includes('toRedis')){
       await Axios.post(`${API_URL}/api/${route}`, {
@@ -135,7 +135,7 @@ const ChannelData: React.FC = () => {
             if(newMessage){
               let now = new Date()
               submitMessages({
-                  author: 'Vine', 
+                  author: 'User X', 
                   content: newMessage,
                   date: `${now.toLocaleDateString().concat(` - ${now.toLocaleTimeString()}`)}`,
                   bot: false,

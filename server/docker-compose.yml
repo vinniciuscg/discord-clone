@@ -20,6 +20,8 @@ services:
       - redis
     environment:
       - REDIS_URL=redis://redis-server
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE_NAME=
       
   db:
     container_name: 'database-node'
@@ -29,5 +31,5 @@ services:
     ports:
       - '3306:3306'
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=
       - TZ=America/Sao_Paulo

@@ -9,8 +9,8 @@ const PORT = 1433;
 const db = mysql.createPool({
   host: "database-node",
   user: "root",
-  password: "root",
-  database: "messagesdb",
+  password: process.env.MYSQL_ROOT_PASSWORD,
+  database: process.env.MYSQL_DATABASE_NAME,
 })
 
 app.use(cors());
@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/api/getFromRedis', async (req, res) => {
   let messages = await redis.getAsync('messages');
+
   if(!messages){
     
     const sqlSelect = "SELECT author, content, date, mention, bot FROM messages";
@@ -27,7 +28,7 @@ app.get('/api/getFromRedis', async (req, res) => {
       // if any error while executing above query, throw error
       if (err) throw err;
       // if there is no error, you have the result
-      redis.setAsync('messages', JSON.stringify(result));
+      redis.setAsync('messages', JSON.stringify(result), 'EX', 10);
       console.log("Getting from Database")
 
       return res.json(result)
@@ -49,7 +50,7 @@ app.get('/api/getFromDB', async (req, res) => {
     if (err) throw err;
     
     // if there is no error, you have the result
-    redis.setAsync('messages', JSON.stringify(result));
+    redis.setAsync('messages', JSON.stringify(result), 'EX', 10);
 
     console.log('Getting from Database');
     return res.json(result)
@@ -65,7 +66,7 @@ app.post('/api/toRedis', async (req, res) => {
   //}else{
   //  previous = unsentMessages
   //}
-  redis.setAsync('messages', JSON.stringify(messagesArray));
+  redis.setAsync('messages', JSON.stringify(messagesArray), 'EX', 10);
 })
 
 app.post('/api/toDB/byArray', async (req, res) => {
