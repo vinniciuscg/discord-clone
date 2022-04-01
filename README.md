@@ -1,5 +1,7 @@
 # Discord-Clone
 
+![image](https://user-images.githubusercontent.com/33614882/161346701-8bad5453-7e2f-43a2-9ac7-9e7d262f30da.png)
+
 ============================================================================================================================================
 
 Application developed from [Discord Interface Clone](https://github.com/rocketseat-content/youtube-clone-discord) by RocketSeat.
